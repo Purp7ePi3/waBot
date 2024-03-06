@@ -7,7 +7,7 @@
     "start": "node wb2.js"
   },
   "dependencies": {
-    "@wppconnect-team/wppconnect": "*", // Use the latest version
+    "@wppconnect-team/wppconnect": "*",
     "puppeteer": "^13.0.1",
     "axios": "^0.26.0"
   },

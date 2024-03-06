@@ -2,12 +2,17 @@
   "name": "your-project-name",
   "version": "1.0.0",
   "description": "Your project description",
-  "main": "wb2.js", 
+  "main": "wb2.js",
   "scripts": {
-    "start": "node wb2.js"  
+    "start": "node wb2.js"
   },
   "dependencies": {
-   
+    "@wppconnect-team/wppconnect": "^3.0.0",
+    "puppeteer": "^13.0.1",
+    "axios": "^0.26.0"
   },
-  "license": "MIT" 
+  "devDependencies": {
+    // If you have any development dependencies, you can add them here
+  },
+  "license": "MIT"
 }

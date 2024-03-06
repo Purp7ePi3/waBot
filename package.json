@@ -7,12 +7,12 @@
     "start": "node wb2.js"
   },
   "dependencies": {
-    "@wppconnect-team/wppconnect": "^3.0.0",
+    "@wppconnect-team/wppconnect": "*", // Use the latest version
     "puppeteer": "^13.0.1",
     "axios": "^0.26.0"
   },
   "engines": {
-  "node": "20.x"
-},
+    "node": "20.x"
+  },
   "license": "MIT"
 }

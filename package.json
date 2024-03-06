@@ -2,12 +2,12 @@
   "name": "your-project-name",
   "version": "1.0.0",
   "description": "Your project description",
-  "main": "wb2.js",  // Replace with your entry point file
+  "main": "wb2.js", 
   "scripts": {
-    "start": "node wb2.js"  // Replace with your start command
+    "start": "node wb2.js"  
   },
   "dependencies": {
-    // List your dependencies here
+   
   },
-  "license": "MIT"  // Add a license field if applicable
+  "license": "MIT" 
 }

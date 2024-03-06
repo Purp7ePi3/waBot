@@ -2,11 +2,11 @@
   "name": "your-project-name",
   "version": "1.0.0",
   "description": "Your project description",
-  "main": "wb2.js",  // Update this line to match your entry point file
+  "main": "wb2.js", 
   "scripts": {
-    "start": "node wb2.js"  // Update this line if needed
+    "start": "node wb2.js" 
   },
   "dependencies": {
-    // Your dependencies here
+    
   }
 }

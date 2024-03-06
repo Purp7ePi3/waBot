@@ -11,5 +11,8 @@
     "puppeteer": "^13.0.1",
     "axios": "^0.26.0"
   },
+  "engines": {
+  "node": "20.x"
+}
   "license": "MIT"
 }

@@ -1,5 +1,5 @@
 {
-  "name": "your-project-name",
+  "name": "waBot",
   "version": "1.0.0",
   "description": "Your project description",
   "main": "wb2.js",
@@ -10,9 +10,6 @@
     "@wppconnect-team/wppconnect": "^3.0.0",
     "puppeteer": "^13.0.1",
     "axios": "^0.26.0"
-  },
-  "devDependencies": {
-    // If you have any development dependencies, you can add them here
   },
   "license": "MIT"
 }

@@ -5,9 +5,9 @@ const path = require('path');
 const axios = require('axios');
 const { on } = require('events');
 
-let BotId = '16476661733@c.us';
+let BotId = 'botNumber@c.us';
 
-const ownerId = '393735456899@c.us';
+const ownerId = 'ownerNnumber@c.us';
 
 const nullLogger = {
   info: () => {},
@@ -91,7 +91,6 @@ function start(client) {
       } else if (msg.isGroupMsg && msg.body && msg.body.toLowerCase().startsWith('!everyone')) {
         const participants = await client.getGroupMembers(msg.from);
         let senderId = msg.author;
-        let BotId = '16476661733@c.us';
         senderId = senderId.replace(/[^0-9]/g, '');
         BotId = BotId.replace(/[^0-9]/g, '');
         let mentionString = '';
@@ -122,7 +121,7 @@ function start(client) {
         const coinResult = trimmedOptions[resultIndex];
         await client.sendText(msg.from, `${result === 0 ? 'Testa' : 'Croce'}, quindi *${coinResult.toUpperCase()}*.`);
       } else if (msg.body.toLowerCase().startsWith('!coffee')) {
-        const coffeeLink = 'https://www.paypal.me/simonebellissimo?locale.x=it_IT';
+        const coffeeLink = 'PaypalLink';
         const coffeeMessage = `☕️Salve☕️\n\n` +
           `Scommetto che stai apprezzando il mio lavoro qui. Tenerlo online è un po' come cercare di tenere in vita una pianta grassa: ha bisogno di cure, ma senza acqua e sole muore!\n\n` +
           `Se ti va di darmi un aiutino, ecco il mio link PayPal: ${coffeeLink}\n\n` +

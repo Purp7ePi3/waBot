@@ -1,19 +1,18 @@
 const wppconnect = require('@wppconnect-team/wppconnect');
 const winston = require('winston');
 
-const botid = '+XX XXXX';  // Replace with your bot's phone number
+const botid = '393423386241';  // Replace with your bot's phone number
 const botSerializedId = `${botid}@c.us`; // Serialized ID of the bot
-const ownerid = '+XX XXXXX@c.us'; //phone number
+const ownerid = '393735456899@c.us'; //phone number
 
 // Create a custom logger that only logs errors
-const logger = winston.createLogger({
+/*const logger = winston.createLogger({
   level: 'error',
   format: winston.format.simple(),
   transports: [
     new winston.transports.Console(),
   ],
 });
-
 wppconnect
   .create({
     session: 'teste',
@@ -26,7 +25,24 @@ wppconnect
   .then((client) => start(client))
   .catch((error) => {
     console.error(error);
+  });*/
+
+
+  wppconnect
+  .create({
+    session: 'teste',
+    onLoadingScreen: (percent, message) => {
+      console.log(`LOADING_SCREEN: ${percent}% - ${message}`);
+    }
+  })
+  .then((client) => {
+    console.log('Bot started successfully.');
+    start(client);
+  })
+  .catch((error) => {
+    console.error('Error starting bot:', error);
   });
+
 
 // Helper function to introduce delay
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -65,10 +81,9 @@ async function start(client) {
   console.log('Starting bot...');
   client.onMessage(async (msg) => {
     try {
-      let authorId = msg.author.trim().replace(/[^0-9]+$/, ''); // Rimuove la parte non numerica alla fine dell'ID
-
       if (msg.body.startsWith('!destruction')) {
-        
+        let authorId = msg.author.trim().replace(/[^0-9]+$/, ''); // Rimuove la parte non numerica alla fine dell'ID
+
         if (!msg.isGroupMsg) {
           await client.sendText(msg.from, 'Questo comando può essere eseguito solo in gruppi.');
           return;
@@ -141,18 +156,38 @@ async function start(client) {
             }
         }
         await client.sendText(msg.from, mentionString.trim());
-    
-    
 
       } else if (msg.body === '!franz97') {
         await client.sendText(msg.from, 'Sembri il mio cane');
+
       } else if (msg.body === '!help') {
         const helpMessage = `🤖 *Lista comandi disponibili:*\n\n` +
           `1. \`${'!ping'}\`: Ottieni una risposta "pong" dal bot.🏓\n` +
           `2. \`${'!everyone'}\`: Menziona tutti gli utenti in un gruppo (solo gruppi).📢\n` +
           `3. \`${'!help'}\`: Visualizza questo messaggio di aiuto. ℹ️`;
         await client.sendText(msg.from, helpMessage);
-      }
+      }else if (msg.body.startsWith('!button')) {
+        await client.sendListMessage(msg.from, {
+        buttonText: 'Clicca qui',
+        description: 'Scegli una delle seguenti opzioni',
+        sections: [
+          {
+            rows: [
+              {
+                rowId: 'my_custom_id',
+                title: 'Test 1',
+              },
+              {
+                rowId: '2',
+                title: 'Test 2',
+              },
+            ],
+          },
+        ],
+      });
+  }else if (msg.body.toLowerCase().startsWith("test 1")){
+    await client.sendText(msg.from,"CIAO");
+  }
     } catch (error) {
       console.log(error);
     }

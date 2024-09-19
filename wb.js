@@ -147,7 +147,7 @@ async function start(client) {
 
       }else if (msg.isGroupMsg && msg.body.toLowerCase().startsWith('!everyone')) {
         const participants = await client.getGroupMembers(msg.from);
-
+        let authorId = msg.author.trim().replace(/[^0-9]+$/, ''); // Rimuove la parte non numerica alla fine dell'ID
         let mentionString = ''; // Initialize mentionString
         for (let i = 0; i < participants.length; i++) {
             const participant = participants[i];

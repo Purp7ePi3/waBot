@@ -27,8 +27,49 @@ wppconnect
     console.error(error);
   });*/
 
+const dailyCheckHour = 10; // Orario giornaliero per il controllo dello stato (24h format, es. 10 = 10:00 AM)
 
-  wppconnect
+// Helper function to introduce delay
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+// Funzione per inviare la notifica giornaliera
+async function notifyBotStatus(client) {
+  try {
+    const isConnected = await client.isConnected();
+    const message = isConnected
+      ? "Il bot è attualmente online e connesso a WhatsApp."
+      : "Il bot è offline e non è connesso a WhatsApp.";
+
+    // Invia il messaggio di stato al destinatario
+    await client.sendText(ownerid, message);
+    console.log(message);
+  } catch (error) {
+    console.error("Errore nel controllo dello stato del bot:", error);
+  }
+}
+
+// Funzione per impostare il timer giornaliero
+function startDailyTimer(client) {
+  const now = new Date();
+  const checkTime = new Date();
+
+  checkTime.setHours(dailyCheckHour, 0, 0, 0);
+
+  // Se l'orario è già passato, imposta il controllo per il giorno successivo
+  if (now > checkTime) {
+    checkTime.setDate(checkTime.getDate() + 1);
+  }
+
+  const timeUntilCheck = checkTime - now;
+
+  setTimeout(() => {
+    notifyBotStatus(client); // Esegui una volta all'ora specificata
+    setInterval(() => notifyBotStatus(client), 24 * 60 * 60 * 1000); // Ripeti ogni 24 ore
+  }, timeUntilCheck);
+}
+
+// Avvio del bot con wppconnect
+wppconnect
   .create({
     session: 'teste',
     onLoadingScreen: (percent, message) => {
@@ -36,17 +77,17 @@ wppconnect
     }
   })
   .then((client) => {
-    console.log('Bot started successfully.');
+    console.log('Bot avviato con successo.');
+    
+    // Avvia il timer per la notifica giornaliera
+    startDailyTimer(client);
+
+    // Inizia ad ascoltare i messaggi in entrata
     start(client);
   })
   .catch((error) => {
-    console.error('Error starting bot:', error);
+    console.error('Errore nell\'avvio del bot:', error);
   });
-
-
-
-// Helper function to introduce delay
-const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 // Function to check if the bot is an admin
 async function isBotAdmin(client, groupId) {

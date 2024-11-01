@@ -28,7 +28,7 @@ wppconnect
   });*/
 
 
-wppconnect
+  wppconnect
   .create({
     session: 'teste',
     onLoadingScreen: (percent, message) => {
@@ -41,6 +41,7 @@ wppconnect
   })
   .catch((error) => {
     console.error('Error starting bot:', error);
+  });
 
 
 

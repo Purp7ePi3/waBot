@@ -28,20 +28,30 @@ wppconnect
   });*/
 
 
-  wppconnect
-  .create({
-    session: 'teste',
-    onLoadingScreen: (percent, message) => {
-      console.log(`LOADING_SCREEN: ${percent}% - ${message}`);
-    }
-  })
-  .then((client) => {
-    console.log('Bot started successfully.');
-    start(client);
-  })
-  .catch((error) => {
-    console.error('Error starting bot:', error);
+wppconnect.create({
+  session: 'teste',
+  autoClose: false,  // Impedisce la chiusura automatica della sessione
+  catchQR: (qrCode, asciiQR) => {
+    console.log("Scansiona il seguente QR Code:");
+    console.log(asciiQR);
+  },
+  statusFind: (statusSession) => {
+    console.log("Stato della sessione:", statusSession);
+  },
+  // Imposta il percorso per salvare i dati della sessione in un file
+  puppeteerOptions: {
+    headless: true,  // Non mostrare la finestra del browser (opzionale)
+  },
+  sessionToken: fs.existsSync(path) ? require(path) : null,  // Carica il token se esiste
+}).then((client) => {
+  // Salva il token persistente ogni volta che si ottiene un nuovo token
+  client.onToken((token) => {
+    console.log("Nuovo token generato. Salvataggio...");
+    fs.writeFileSync(path, JSON.stringify(token));
   });
+  start(client);
+}).catch((error) => console.log("Errore:", error));
+
 
 
 // Helper function to introduce delay

@@ -1,9 +1,9 @@
 const wppconnect = require('@wppconnect-team/wppconnect');
 const winston = require('winston');
 
-const botid = '393423386241';  // Replace with your bot's phone number
+const botid = '';  // Replace with your bot's phone number
 const botSerializedId = `${botid}@c.us`; // Serialized ID of the bot
-const ownerid = '393735456899@c.us'; //phone number
+const ownerid = '@c.us'; //phone number
 
 // Create a custom logger that only logs errors
 /*const logger = winston.createLogger({

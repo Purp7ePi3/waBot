@@ -68,6 +68,23 @@ function startDailyTimer(client) {
   }, timeUntilCheck);
 }
 
+// Function for periodic keep-alive message
+async function keepAlive(client) {
+  try {
+    // Replace ownerid with your own phone number
+    await client.sendText(ownerid, "Keep-alive check");
+    console.log("Keep-alive message sent to owner");
+  } catch (error) {
+    console.error("Error sending keep-alive message:", error);
+  }
+}
+
+// Set interval for keep-alive messages (every 12 hours)
+function startKeepAlive(client) {
+  // Interval set to 12 hours (43,200,000 milliseconds)
+  setInterval(() => keepAlive(client), 12 * 60 * 60 * 1000);
+}
+
 // Avvio del bot con wppconnect
 wppconnect
   .create({
@@ -78,16 +95,18 @@ wppconnect
   })
   .then((client) => {
     console.log('Bot avviato con successo.');
-    
-    // Avvia il timer per la notifica giornaliera
-    startDailyTimer(client);
 
-    // Inizia ad ascoltare i messaggi in entrata
+    // Start keep-alive interaction every 12 hours
+    startKeepAlive(client);
+
+    // Start daily notification timer and message handling
+    startDailyTimer(client);
     start(client);
   })
   .catch((error) => {
     console.error('Errore nell\'avvio del bot:', error);
   });
+
 
 // Function to check if the bot is an admin
 async function isBotAdmin(client, groupId) {

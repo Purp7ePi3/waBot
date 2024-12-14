@@ -191,7 +191,7 @@ async function start(client) {
         const versetto = versetti[randomIndex];
 
         // Crea il messaggio da inviare
-        const message = `${versetto.versetto} - Riferimento: ${versetto.riferimento}`;
+        const message = `${versetto.versetto}\n\n*${versetto.riferimento}*`;
 
         // Invia il messaggio al mittente
         await client.sendText(msg.from, message);

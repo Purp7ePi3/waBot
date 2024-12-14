@@ -1,28 +1,17 @@
 const wppconnect = require('@wppconnect-team/wppconnect');
 const winston = require('winston');
 
-const botid = '393423386241';  // Replace with your bot's phone number
-const botSerializedId = `${botid}@c.us`; // Serialized ID of the bot
-const ownerid = '393735456899@c.us'; //phone number
+const phoneNumber = require('./phoneNumber.json');
+const bestemmie = require('./bestemmie.json');
+const fs = require('fs');
+
+// Creare dinamicamente botSerializedId
+const botid = phoneNumber.botid;
+const botSerializedId = `${botid}@c.us`;
+const ownerid = phoneNumber.ownerid;
 
 // Helper function to introduce delay
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
-// Funzione per inviare la notifica giornaliera
-async function notifyBotStatus(client) {
-  try {
-    const isConnected = await client.isConnected();
-    const message = isConnected
-      ? "Il bot è attualmente online e connesso a WhatsApp."
-      : "Il bot è offline e non è connesso a WhatsApp.";
-
-    // Invia il messaggio di stato al destinatario
-    await client.sendText(ownerid, message);
-    console.log(message);
-  } catch (error) {
-    console.error("Errore nel controllo dello stato del bot:", error);
-  }
-}
 
 // Function for periodic keep-alive message
 async function keepAlive(client) {
@@ -41,27 +30,19 @@ function startKeepAlive(client) {
   setInterval(() => keepAlive(client), 24 * 60 * 60 * 1000);
 }
 
-// Avvio del bot con wppconnect
-wppconnect
-  .create({
-    session: 'teste',
-    onLoadingScreen: (percent, message) => {
-      console.log(`LOADING_SCREEN: ${percent}% - ${message}`);
+// Funzione per verificare se un messaggio contiene una bestemmia
+function containsBestemmia(message) {
+  const messageLowerCase = message.toLowerCase();
+
+  // Verifica se il messaggio contiene una bestemmia
+  for (const bestemmia of bestemmie.bestemmie) {
+    if (messageLowerCase.includes(bestemmia.toLowerCase())) {
+      return true; // Se trova una bestemmia, restituisce true
     }
-  })
-  .then((client) => {
-    console.log('Bot avviato con successo.');
+  }
 
-    // Start keep-alive interaction every 12 hours
-    startKeepAlive(client);
-
-    // Start daily notification timer and message handling
-    start(client);
-  })
-  .catch((error) => {
-    console.error('Errore nell\'avvio del bot:', error);
-  });
-
+  return false; // Se non trova nessuna bestemmia, restituisce false
+}
 
 // Function to check if the bot is an admin
 async function isBotAdmin(client, groupId) {
@@ -92,6 +73,40 @@ async function isUserAdmin(client, groupId, userId) {
     return false;
   }
 }
+
+async function loadVersetti() {
+  return new Promise((resolve, reject) => {
+    fs.readFile('versetti.json', 'utf8', (err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(JSON.parse(data)); // Restituisce i versetti come oggetto JavaScript
+      }
+    });
+  });
+}
+
+// Avvio del bot con wppconnect
+wppconnect
+  .create({
+    session: 'teste',
+    onLoadingScreen: (percent, message) => {
+      console.log(`LOADING_SCREEN: ${percent}% - ${message}`);
+    }
+  })
+  .then((client) => {
+    console.log('Bot avviato con successo.');
+
+    // Start keep-alive interaction every 12 hours
+    startKeepAlive(client);
+
+    // Start daily notification timer and message handling
+    start(client);
+  })
+  .catch((error) => {
+    console.error('Errore nell\'avvio del bot:', error);
+  });
+
 
 async function start(client) {
   console.log('Starting bot...');
@@ -169,6 +184,19 @@ async function start(client) {
           `2. \`${'!everyone'}\`: Menziona tutti gli utenti in un gruppo (solo gruppi).📢\n` +
           `3. \`${'!help'}\`: Visualizza questo messaggio di aiuto. ℹ️`;
         await client.sendText(msg.from, helpMessage);
+      } else if (containsBestemmia(msg.body.toLowerCase())) {
+        const versetti = await loadVersetti();
+        // Scegli un versetto casuale
+        const randomIndex = Math.floor(Math.random() * versetti.length);
+        const versetto = versetti[randomIndex];
+
+        // Crea il messaggio da inviare
+        const message = `${versetto.versetto} - Riferimento: ${versetto.riferimento}`;
+
+        // Invia il messaggio al mittente
+        await client.sendText(msg.from, message);
+      } else if (msg.body.toLowerCase.startsWith("!pivona")){
+        await client.sendText(msg.from,"Ciao Pivona sono Antonio, esci con me?");
       }
     } catch (error) {
       console.log(error);

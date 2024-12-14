@@ -178,7 +178,7 @@ async function start(client) {
       } else if (msg.body.toLowerCase().startsWith('!franz97')) {
         await client.sendText(msg.from, 'Sembri il mio cane');
 
-      } else if (msg.body.toLowerCase().startsWith( '!help')) {
+      } else if (msg.body.toLowerCase().startsWith('!help')) {
         const helpMessage = `🤖 *Lista comandi disponibili:*\n\n` +
           `1. \`${'!ping'}\`: Ottieni una risposta "pong" dal bot.🏓\n` +
           `2. \`${'!everyone'}\`: Menziona tutti gli utenti in un gruppo (solo gruppi).📢\n` +

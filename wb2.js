@@ -1,8 +1,8 @@
 const wppconnect = require('@wppconnect-team/wppconnect');
 const winston = require('winston');
+const axios = require('axios');
 
 const phoneNumber = require('./phoneNumber.json');
-const bestemmie = require('./bestemmie.json');
 const fs = require('fs');
 
 // Creare dinamicamente botSerializedId
@@ -30,18 +30,21 @@ function startKeepAlive(client) {
   setInterval(() => keepAlive(client), 24 * 60 * 60 * 1000);
 }
 
-// Funzione per verificare se un messaggio contiene una bestemmia
-function containsBestemmia(message) {
-  const messageLowerCase = message.toLowerCase();
-
-  // Verifica se il messaggio contiene una bestemmia
-  for (const bestemmia of bestemmie.bestemmie) {
-    if (messageLowerCase.includes(bestemmia.toLowerCase())) {
-      return true; // Se trova una bestemmia, restituisce true
-    }
+async function getCoinPrice(sym) {
+  try {
+    const response = await axios.get('https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest', {
+      params: {
+        symbol: sym,
+      },
+      headers: {
+        'X-CMC_PRO_API_KEY': '75093899-130a-415e-89f9-03d2f1d542db'
+      }
+    });
+    return response.data.data.sym.quote.USD.price;
+  } catch (error) {
+    console.error('Errore nel recupero del prezzo di' + sym + ' Coin:', error);
+    return null;
   }
-
-  return false; // Se non trova nessuna bestemmia, restituisce false
 }
 
 // Function to check if the bot is an admin
@@ -72,18 +75,6 @@ async function isUserAdmin(client, groupId, userId) {
     console.error('Error checking user admin status:', error);
     return false;
   }
-}
-
-async function loadVersetti() {
-  return new Promise((resolve, reject) => {
-    fs.readFile('versetti.json', 'utf8', (err, data) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(JSON.parse(data)); // Restituisce i versetti come oggetto JavaScript
-      }
-    });
-  });
 }
 
 // Avvio del bot con wppconnect
@@ -197,6 +188,14 @@ async function start(client) {
         await client.sendText(msg.from, message);
       } else if (msg.body.toLowerCase.startsWith("!pivona")){
         await client.sendText(msg.from,"Ciao Pivona sono Antonio, esci con me?");
+      } else if (msg.body.toLowerCase().startsWith("!crypto")){
+        const sym = msg.body.split(' ')[1];
+        const price = getCoinPrice(sym)
+        if(!price){
+          await client.sendText(msg.from, `Errore nel recupero del prezzo di $${sym}.`);
+        } else {
+          await client.sendText(msg.from, `Il prezzo attuale di $${sym} è: $${price.toFixed(2)}`);
+        }
       }
     } catch (error) {
       console.log(error);

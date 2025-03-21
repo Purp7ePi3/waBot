@@ -37,7 +37,7 @@ async function getCoinPrice(sym) {
         symbol: sym,
       },
       headers: {
-        'X-CMC_PRO_API_KEY': '75093899-130a-415e-89f9-03d2f1d542db'
+        'X-CMC_PRO_API_KEY': ''
       }
     });
     return response.data.data.sym.quote.USD.price;

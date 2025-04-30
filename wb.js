@@ -38,9 +38,9 @@ function startKeepAlive(client) {
 
 async function getCryptoInfo(symbol) {
   try {
-    const response = await axios.get('https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest', {
+    const response = await axios.get('', {
       params: { symbol: symbol.toUpperCase() },
-      headers: { 'X-CMC_PRO_API_KEY': '75093899-130a-415e-89f9-03d2f1d542db' }
+      headers: { 'X-CMC_PRO_API_KEY': '' }
     });
     
     const data = response.data.data[symbol.toUpperCase()];
